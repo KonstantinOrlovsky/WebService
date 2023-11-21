@@ -7,6 +7,7 @@ using System.Web.Services;
 using System.Net;
 using UserService.Infrastructure.Models;
 using UserService.Infrastructure.Helpers;
+using UserService.Infrastructure;
 
 namespace UserService
 {
@@ -54,6 +55,17 @@ namespace UserService
             catch (ArgumentException ex)
             {
                 ResponseHelper.SetErrorResponse(Context.Response, HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == Constants.ErrorNumberOfUnavailableDb)
+                {
+                    DbInitializeHelper.CreateDbInfrastructure();
+                    ResponseHelper.SetErrorResponse(Context.Response, HttpStatusCode.InternalServerError, "Database not found, please send request again");
+                    return;
+                }
+
+                ResponseHelper.SetErrorResponse(Context.Response, HttpStatusCode.InternalServerError, ex.Message);
             }
             catch (Exception ex)
             {

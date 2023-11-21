@@ -21,6 +21,22 @@ namespace UserService.Infrastructure.Helpers
             return $"DELETE FROM Users WHERE Id='{id}'";
         }
 
+        public static string GetCreateDbExpression(string dbName)
+        {
+            return $"CREATE DATABASE {dbName}";
+        }
+
+        public static string GetUseExpression(string name)
+        {
+            return $"USE {name}";
+        }
+
+        public static string GetCreateUserTableExpression()
+        {
+
+            return "CREATE TABLE Users (Id uniqueidentifier NOT NULL, FirstName nvarchar(50) NOT NULL, LastName nvarchar(50) NOT NULL, Age int NOT NULL, Email nvarchar(50) NOT NULL, CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (Id ASC))";
+        }
+
         public static string GetIsExistUserEmailExpression(string email, Guid id = default)
         {
             var exceptYourselfExpr = id == default ? string.Empty : $"AND Id != '{id}'";
